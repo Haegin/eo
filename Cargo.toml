@@ -1,0 +1,11 @@
+[package]
+name = "eo"
+version = "0.1.0"
+authors = ["Harry Mills <harry@haeg.in>"]
+
+[dependencies]
+clap = "2.30.0"
+
+[[bin]]
+name = "eo"
+path = "eo.rs"
