@@ -1,11 +1,13 @@
 extern crate clap;
 
 use clap::{App, Arg};
+use std::io::{self, Write};
 // use std::env;
 
 fn main() {
   let matches = app().get_matches();
-  println!("{}", echo(matches));
+  print!("{}", echo(matches));
+  io::stdout().flush().unwrap();
 }
 
 fn app() -> clap::App<'static, 'static> {
@@ -28,7 +30,11 @@ fn echo(matches: clap::ArgMatches) -> String {
     .values_of("strings")
     .unwrap()
     .collect();
-  return strings.join(" ") + "\n";
+  let mut output: String = strings.join(" ");
+  if !matches.is_present("no-newline") {
+    output.push_str("\n");
+  }
+  return output;
 }
 
 #[cfg(test)]
@@ -47,9 +53,9 @@ mod test {
     assert_eq!(echo(input), "Goodbye, Cruel World\n".to_string());
   }
 
-  // #[test]
-  // fn test_print_longer_input() {
-  //   let input = vec!["Goodbye,".to_string(), "Cruel World".to_string()];
-  //   assert_eq!(echo(input), "Goodbye, Cruel World\n".to_string());
-  // }
+  #[test]
+  fn test_n_command_line_arg() {
+    let input = app().get_matches_from(vec!["eo", "-n", "Goodbye,", "Cruel World"]);
+    assert_eq!(echo(input), "Goodbye, Cruel World".to_string());
+  }
 }
